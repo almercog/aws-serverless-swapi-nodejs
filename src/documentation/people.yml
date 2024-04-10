@@ -1,0 +1,166 @@
+openapi: 3.0.3
+info:
+   title: SWAPI Application
+   description: Esta documentación muestra la aplicacion SWAPI basado the OpenAPI 3.0 specification.
+   contact:
+
+      email: almercog@gmail.com
+   license:
+      name: Apache 2.0
+      url: http://www.apache.org/licenses/LICENSE-2.0.html
+   version: 1.0.0
+servers:
+-  url: https://yd0ymo5txd.execute-api.us-east-1.amazonaws.com/dev/
+tags:
+-  name: people
+   description: Operations about people
+paths:
+   /people:
+      post:
+         tags:
+         - people
+         summary: Crear People
+         description: Este metodo crea un people.
+         operationId: people
+         requestBody:
+            description: Creacion de people
+            content:
+               application/json:
+                  schema:
+                     $ref: '#/components/schemas/PeopleRequest'
+                  examples:
+                     Crear People Exitoso:
+                        value:
+                           payload:
+                              name: Luke Skywalker
+                              height: '172'
+                              mass: '77'
+                              hairColor: blond
+                              skinColor: fair
+                              eyeColor: blue
+                              birthYear: 19BBY
+                              gender: male
+                              homeWorld: https://swapi.py4e.com/api/planets/1/
+                              films:
+                                - https://swapi.py4e.com/api/films/1/
+                                - https://swapi.py4e.com/api/films/2/
+                                - https://swapi.py4e.com/api/films/3/
+                                - https://swapi.py4e.com/api/films/6/
+                                - https://swapi.py4e.com/api/films/7/
+                              species:
+                                - https://swapi.py4e.com/api/species/1/
+                              vehicles:
+                                - https://swapi.py4e.com/api/vehicles/14/
+                                - https://swapi.py4e.com/api/vehicles/30/
+                              starShips:
+                                - https://swapi.py4e.com/api/starships/12/
+                                - https://swapi.py4e.com/api/starships/22/
+                              url: https://swapi.py4e.com/api/people/1/
+         responses:
+            '200':
+               description: successful operation
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/PeopleResponse'
+                     examples:
+                        Crear People Exitoso:
+                           value:
+                              type: OK
+                              message: We sent you an email to john.perez@mail.com
+         security:
+         -  api_key: []
+components:
+   schemas:
+      PeopleRequest:
+         required:
+         - payload
+         type: object
+         properties:
+            payload:
+               $ref: '#/components/schemas/People'
+      PeopleResponse:
+         type: object
+         properties:
+            type:
+               type: string
+               example: 200
+            message:
+               type: string
+               example: 'Successful operation.'
+         xml:
+            name: '##default'
+      People:
+         required:
+         - name
+         - height
+         - loss
+         - hairColor
+         - skinColor
+         - eyeColor
+         - birthYear
+         - gender
+         - homeWorld
+         - url
+         type: object
+         properties:
+            name:
+               type: string
+               example: Luke Skywalker
+            height:
+               type: string
+               example: '172'
+            loss:
+               type: string
+               example: '77'
+            hairColor:
+               type: string
+               example: 'blond'
+            skinColor:
+               type: string
+               example: 'fair'
+            eyeColor:
+               type: string
+               example: 'blue'
+            birthYear:
+               type: string
+               example: '19BBY'
+            gender:
+               type: string
+               enum:
+               - male
+               - female
+               example: male
+            homeWorld:
+               type: string
+               example: 'https://swapi.py4e.com/api/planets/1/'
+            films:
+               type: array
+               items:
+                  type: string
+               example: ['https://swapi.py4e.com/api/films/1/','https://swapi.py4e.com/api/films/2/','https://swapi.py4e.com/api/films/3/','https://swapi.py4e.com/api/films/6/','https://swapi.py4e.com/api/films/7/']
+            species:
+               type: array
+               items:
+                  type: string
+               example: ['https://swapi.py4e.com/api/species/1/']
+            vehicules:
+               type: array
+               items:
+                  type: string
+               example: ['https://swapi.py4e.com/api/vehicles/14/', 'https://swapi.py4e.com/api/vehicles/30/']
+            starShips:
+               type: array
+               items:
+                  type: string
+               example: ['https://swapi.py4e.com/api/starships/12/', 'https://swapi.py4e.com/api/starships/22/']
+            url:
+               type: string
+               example: 'https://swapi.py4e.com/api/people/1/'
+         xml:
+            name: loan
+   securitySchemes:
+      api_key:
+         type: apiKey
+         name: api_key
+         in: header

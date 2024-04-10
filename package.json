@@ -1,0 +1,26 @@
+{
+  "name": "notes",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "src/swapi/people/index.js",
+  "scripts": {
+    "deploy": "sls deploy",
+    "undeploy": "sls remove",
+    "test": "jest --coverage --watchAll --no-cache "
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.552.0",
+    "serverless-iam-roles-per-function": "^3.2.0",
+    "zod": "3.22.4"
+  },
+  "devDependencies": {
+    "jest": "29.7.0",
+    "jest-cucumber": "4.1.0",
+    "serverless-offline": "^13.3.3",
+    "serverless-plugin-reducer": "^4.0.1"
+  }
+}

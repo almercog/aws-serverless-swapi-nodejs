@@ -1,0 +1,110 @@
+service: people-api
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: dev
+  region: us-east-1
+
+plugins:
+  - serverless-iam-roles-per-function
+  - serverless-offline
+package:
+  individually: true
+  exclude:
+    - node_modules/aws-sdk/**
+    - node_modules/@aws-sdk/**
+
+# You can add CloudFormation resource templates here
+resources:
+  Resources:
+    peopleTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: people
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+
+functions:
+  createPeople:
+    handler: src/swapi/people/index.createPeople
+    environment:
+      PEOPLE_TABLE_NAME: !Ref peopleTable
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: !GetAtt peopleTable.Arn
+    events:
+      - http:
+          path: people
+          method: post
+
+  updatePeople:
+    handler: src/swapi/people/index.updatePeople
+    environment:
+      PEOPLE_TABLE_NAME: !Ref peopleTable
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:updateItem
+        Resource: !GetAtt peopleTable.Arn 
+    events:
+      - http:
+          path: people/{id}
+          method: put
+
+  deletePeople:
+    handler: src/swapi/people/index.deletePeople
+    environment:
+      PEOPLE_TABLE_NAME: !Ref peopleTable
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:deleteItem
+        Resource: !GetAtt peopleTable.Arn
+    events:
+      - http:
+          path: people/{id}
+          method: delete
+
+  getAllPeople:
+    handler: src/swapi/people/index.getAllPeople
+    environment:
+      PEOPLE_TABLE_NAME: !Ref peopleTable
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:scan
+        Resource: !GetAtt peopleTable.Arn
+    events:
+      - http:
+          path: people
+          method: get
+
+
+  getPeople:
+    handler: src/swapi/people/index.getPeople
+    environment:
+      PEOPLE_TABLE_NAME: !Ref peopleTable
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:getItem
+        Resource: !GetAtt peopleTable.Arn
+    events:
+      - http:
+          path: people/{id}
+          method: get
+
