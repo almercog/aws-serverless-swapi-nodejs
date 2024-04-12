@@ -8,14 +8,11 @@ import {
 } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
-import { GetPeopleDto } from "../dto/GetPeopleDto.js";
-import { CreatePeopleDto } from "../dto/CreatePeopleDto.js";
-
 const client = new DynamoDBClient({ region: "us-east-1" });
 const PEOPLE_TABLE_NAME = process.env.PEOPLE_TABLE_NAME;
 
 export class PeopleRepository {
-  async create(createPeopleDto = CreatePeopleDto) {
+  async create(createPeopleDto) {
     const people = marshall(createPeopleDto);
     const command = new PutItemCommand({
       TableName: PEOPLE_TABLE_NAME,
@@ -25,7 +22,7 @@ export class PeopleRepository {
     return unmarshall(people);
   }
 
-  async get(getPeopleDto = GetPeopleDto) {
+  async get(getPeopleDto) {
     const command = new GetItemCommand({
       TableName: PEOPLE_TABLE_NAME,
       Key: marshall(getPeopleDto),
@@ -43,11 +40,13 @@ export class PeopleRepository {
     return response;
   }
 
-  async update(createPeopleDto = CreatePeopleDto) {
-    const itemKeys = Object.keys(createPeopleDto);
+  async update(createPeopleDto) {
+    const itemKeys = Object.keys(createPeopleDto).filter(
+      (item) => item !== "id"
+    );
     const command = new UpdateItemCommand({
       TableName: PEOPLE_TABLE_NAME,
-      Key: marshall({ id: people.id }),
+      Key: marshall({ id: createPeopleDto.id }),
       UpdateExpression: `SET ${itemKeys
         .map((k, index) => `#field${index} = :value${index}`)
         .join(", ")}`,
@@ -65,18 +64,18 @@ export class PeopleRepository {
         )
       ),
       ReturnValues: "ALL_NEW",
+      ConditionExpression: "attribute_exists(id)",
     });
     const response = await client.send(command);
-    console.log(response);
-    return response;
+    return response.Attributes ? unmarshall(response.Attributes) : undefined;
   }
 
-  async delete(getPeopleDto = GetPeopleDto) {
+  async delete(getPeopleDto) {
     const command = new DeleteItemCommand({
       TableName: PEOPLE_TABLE_NAME,
       Key: marshall(getPeopleDto),
     });
-    const response = await client.send(command);
-    return response;
+    await client.send(command);
+    return true;
   }
 }

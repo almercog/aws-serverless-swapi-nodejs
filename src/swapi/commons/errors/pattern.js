@@ -1,6 +1,6 @@
 export const makeErrorPattern = (
   e = {
-    type: 0,
+    code: 0,
     payload: "",
     details: "",
   }

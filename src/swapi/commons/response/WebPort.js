@@ -5,7 +5,7 @@ export const WebPort = {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        type: 200,
+        code: 200,
         data,
         message,
       }),
@@ -15,7 +15,7 @@ export const WebPort = {
     return {
       statusCode: 400,
       body: JSON.stringify({
-        type: 400,
+        code: 400,
         message,
         details,
       }),
@@ -25,7 +25,7 @@ export const WebPort = {
     return {
       statusCode: 500,
       body: JSON.stringify({
-        type: 500,
+        code: 500,
         message,
       }),
     };

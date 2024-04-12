@@ -4,25 +4,30 @@ const peopleController = new PeopleController();
 
 export async function createPeople(event, context, cb) {
   context.callbackWaitsForEmptyEventLoop = false;
-  await peopleController.create(event, cb);
+  const response = await peopleController.create(event);
+  cb(null, response);
 }
 
 export async function getPeople(event, context, cb) {
   context.callbackWaitsForEmptyEventLoop = false;
-  await peopleController.get(event, cb);
+  const response = await peopleController.get(event);
+  cb(null, response);
 }
 
 export async function updatePeople(event, context, cb) {
   context.callbackWaitsForEmptyEventLoop = false;
-  await peopleController.update(event, cb);
+  const response = await peopleController.update(event);
+  cb(null, response);
 }
 
 export async function deletePeople(event, context, cb) {
   context.callbackWaitsForEmptyEventLoop = false;
-  await peopleController.delete(event, cb);
+  const response = await peopleController.delete(event);
+  cb(null, response);
 }
 
 export async function getAllPeople(event, context, cb) {
   context.callbackWaitsForEmptyEventLoop = false;
-  await peopleController.getAll(event, cb);
+  const response = await peopleController.getAll(event);
+  cb(null, response);
 }

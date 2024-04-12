@@ -4,82 +4,77 @@ import { PeopleService } from "../service/PeopleService.js";
 const peopleService = new PeopleService();
 
 export class PeopleController {
-  async create(event, cb) {
+  async create(event) {
     try {
       const { payload } = JSON.parse(event.body);
       const people = await peopleService.create(payload);
-      cb(null, WebPort.ok(people));
+      return WebPort.ok(people);
     } catch (error) {
-      if (error.message.includes("type")) {
+      if (error.message.includes("code")) {
         const err = JSON.parse(error.message);
-        console.log(err);
-        cb(null, WebPort.badRequest(err.message, err.details));
+        return WebPort.badRequest(err.message, err.details);
       } else {
-        cb(null, WebPort.serverError(error.message));
+        return WebPort.serverError(error.message);
       }
     }
   }
 
-  async update(event, cb) {
+  async update(event) {
     try {
       const id = event.pathParameters.id;
       const { payload } = JSON.parse(event.body);
       const people = await peopleService.update({ id, ...payload });
-      cb(null, WebPort.ok(people));
+      return WebPort.ok(people);
     } catch (error) {
-      if (error.message.includes("type")) {
+      if (error.message.includes("code")) {
         const err = JSON.parse(error.message);
-        console.log(err);
-        cb(null, WebPort.badRequest(err.message, err.details));
+        return WebPort.badRequest(err.message, err.details);
       } else {
-        cb(null, WebPort.serverError(error.message));
+        return WebPort.serverError(error.message);
       }
     }
   }
 
-  async delete(event, cb) {
+  async delete(event) {
     try {
       const id = event.pathParameters.id;
       const people = await peopleService.delete({ id });
-      cb(null, WebPort.ok(people));
+      return WebPort.ok(people);
     } catch (error) {
-      if (error.message.includes("type")) {
+      if (error.message.includes("code")) {
         const err = JSON.parse(error.message);
-        console.log(err);
-        cb(null, WebPort.badRequest(err.message, err.details));
+        return WebPort.badRequest(err.message, err.details);
       } else {
-        cb(null, WebPort.serverError(error.message));
+        return WebPort.serverError(error.message);
       }
     }
   }
 
-  async get(event, cb) {
+  async get(event) {
     try {
       const id = event.pathParameters.id;
       const people = await peopleService.get({ id });
-      cb(null, WebPort.ok(people));
+      return WebPort.ok(people);
     } catch (error) {
-      if (error.message.includes("type")) {
+      if (error.message.includes("code")) {
         const err = JSON.parse(error.message);
-        console.log(err);
-        cb(null, WebPort.badRequest(err.message, err.details));
+        return WebPort.badRequest(err.message, err.details);
       } else {
-        cb(null, WebPort.serverError(error.message));
+        return WebPort.serverError(error.message);
       }
     }
   }
 
-  async getAll(_, cb) {
+  async getAll(_) {
     try {
       const people = await peopleService.getAll();
-      cb(null, WebPort.ok(people));
+      return WebPort.ok(people);
     } catch (error) {
-      if (error.message.includes("type")) {
+      if (error.message.includes("code")) {
         const err = JSON.parse(error.message);
-        console.log(err);
-        cb(null, WebPort.badRequest(err.message, err.details));
+        return WebPort.badRequest(err.message, err.details);
       } else {
-        cb(null, WebPort.serverError(error.message));
+        return WebPort.serverError(error.message);
       }
     }
   }

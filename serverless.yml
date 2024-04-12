@@ -55,12 +55,13 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
+          - dynamodb:getItem
           - dynamodb:updateItem
         Resource: !GetAtt peopleTable.Arn 
     events:
       - http:
           path: people/{id}
-          method: put
+          method: patch
 
   deletePeople:
     handler: src/swapi/people/index.deletePeople
@@ -70,6 +71,7 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
+          - dynamodb:getItem
           - dynamodb:deleteItem
         Resource: !GetAtt peopleTable.Arn
     events:
@@ -91,7 +93,6 @@ functions:
       - http:
           path: people
           method: get
-
 
   getPeople:
     handler: src/swapi/people/index.getPeople

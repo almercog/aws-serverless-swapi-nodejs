@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
    title: SWAPI Application
-   description: Esta documentación muestra la aplicacion SWAPI basado the OpenAPI 3.0 specification.
+   description: Esta documentación muestra la aplicacion SWAPI basado en OpenAPI 3.0 specification.
    contact:
 
       email: almercog@gmail.com
@@ -20,7 +20,7 @@ paths:
          tags:
          - people
          summary: Crear People
-         description: Este metodo crea un people.
+         description: Este metodo crea people.
          operationId: people
          requestBody:
             description: Creacion de people
@@ -56,6 +56,37 @@ paths:
                                 - https://swapi.py4e.com/api/starships/12/
                                 - https://swapi.py4e.com/api/starships/22/
                               url: https://swapi.py4e.com/api/people/1/
+                     Crear People con error:
+                        value:
+                           payload:
+                              name: Obi-WanKenobi
+                              height: '182'
+                              mass: '77'
+                              skinColor: fair
+                              eyeColor: blue-gray
+                              birthYear: 57BBY
+                              gender: male
+                              homeWorld: https://swapi.py4e.com/api/planets/20/
+                              films:
+                                 - https://swapi.py4e.com/api/films/1/
+                                 - https://swapi.py4e.com/api/films/2/
+                                 - https://swapi.py4e.com/api/films/3/
+                                 - https://swapi.py4e.com/api/films/4/
+                                 - https://swapi.py4e.com/api/films/5/
+                                 - https://swapi.py4e.com/api/films/6/
+                              species:
+                                 - https://swapi.py4e.com/api/species/1/
+                              vehicles:
+                                 - https://swapi.py4e.com/api/vehicles/38/
+                              starShips:
+                                 - https://swapi.py4e.com/api/starships/48/
+                                 - https://swapi.py4e.com/api/starships/59/
+                                 - https://swapi.py4e.com/api/starships/64/
+                                 - https://swapi.py4e.com/api/starships/65/
+                                 - https://swapi.py4e.com/api/starships/74/
+                              created: '2014-12-10T16:16:29.192000Z'
+                              edited: '2014-12-20T21:17:50.325000Z'
+                              url: https://swapi.py4e.com/api/people/10/
          responses:
             '200':
                description: successful operation
@@ -66,10 +97,135 @@ paths:
                      examples:
                         Crear People Exitoso:
                            value:
-                              type: OK
-                              message: We sent you an email to john.perez@mail.com
+                              code: 200
+                              data:
+                                 name: Luke Skywalker
+                                 height: '172'
+                                 mass: '77'
+                                 hairColor: blond
+                                 skinColor: fair
+                                 eyeColor: blue
+                                 birthYear: 19BBY
+                                 gender: male
+                                 homeWorld: https://swapi.py4e.com/api/planets/1/
+                                 films:
+                                    - https://swapi.py4e.com/api/films/1/
+                                    - https://swapi.py4e.com/api/films/2/
+                                    - https://swapi.py4e.com/api/films/3/
+                                    - https://swapi.py4e.com/api/films/6/
+                                    - https://swapi.py4e.com/api/films/7/
+                                 species:
+                                    - https://swapi.py4e.com/api/species/1/
+                                 vehicles:
+                                    - https://swapi.py4e.com/api/vehicles/14/
+                                    - https://swapi.py4e.com/api/vehicles/30/
+                                 starShips:
+                                    - https://swapi.py4e.com/api/starships/12/
+                                    - https://swapi.py4e.com/api/starships/22/
+                                 url: https://swapi.py4e.com/api/people/1/
+                                 id: 22670d2c-1c8b-47fc-ab9b-9851da23a9b4
+                                 created: 1712880920303
+                                 edited: 1712880920303
+                              message: Successful operation.
+                        Crear People con error:
+                           value:
+                              code: 400
+                              message: Person to be wrong
+                              details:
+                                  - code: invalid_type
+                                    expected: string
+                                    received: undefined
+                                    path:
+                                       - hairColor
+                                    message: This field cannot be blank
          security:
          -  api_key: []
+      patch:
+         tags:
+         - people
+         summary: Actualizar People
+         description: Este metodo actualiza people.
+         operationId: people
+         parameters:
+            - name: id
+              in: path
+              description: Identificador de People
+              required: true
+              schema:
+                  type: string
+                  example: 97f732d9-dac4-4589-a706-6014a724e201
+         requestBody:
+            description: Actualizar people
+            content:
+               application/json:
+                  schema:
+                     $ref: '#/components/schemas/PeopleRequest'
+                  examples:
+                     Actualizar People Exitoso:
+                        value:
+                           payload:
+                              name: Luke Skywalk3r
+                              height: '173'
+                              mass: '78'
+                              eyeColor: hazel
+                     Actualizar People con error:
+                        value:
+                           payload:
+                              name: Obi-WanKenobi
+                              height: '182'
+                              mass: '77'
+                              skinColor: true
+         responses:
+            '200':
+               description: successful operation
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/PeopleResponse'
+                     examples:
+                        Actualizar People Exitoso:
+                           value:
+                              code: 200
+                              data:
+                                 name: Luke Skywalk3r
+                                 height: '173'
+                                 mass: '78'
+                                 hairColor: blond
+                                 skinColor: fair
+                                 eyeColor: hazel
+                                 birthYear: 19BBY
+                                 gender: male
+                                 homeWorld: https://swapi.py4e.com/api/planets/1/
+                                 films:
+                                    - https://swapi.py4e.com/api/films/1/
+                                    - https://swapi.py4e.com/api/films/2/
+                                    - https://swapi.py4e.com/api/films/3/
+                                    - https://swapi.py4e.com/api/films/6/
+                                    - https://swapi.py4e.com/api/films/7/
+                                 species:
+                                    - https://swapi.py4e.com/api/species/1/
+                                 vehicles:
+                                    - https://swapi.py4e.com/api/vehicles/14/
+                                    - https://swapi.py4e.com/api/vehicles/30/
+                                 starShips:
+                                    - https://swapi.py4e.com/api/starships/12/
+                                    - https://swapi.py4e.com/api/starships/22/
+                                 url: https://swapi.py4e.com/api/people/1/
+                                 id: 22670d2c-1c8b-47fc-ab9b-9851da23a9b4
+                                 created: 1712880920303
+                                 edited: 1712880920303
+                              message: Successful operation.
+                        Actualizar People con error:
+                           value:
+                              code: 400
+                              message: Person to be wrong
+                              details:
+                                 - code: invalid_type
+                                   expected: string
+                                   received: boolean
+                                   path:
+                                    - skinColor
+                                   message: Invalid type provided for this field
 components:
    schemas:
       PeopleRequest:
@@ -82,12 +238,19 @@ components:
       PeopleResponse:
          type: object
          properties:
-            type:
+            code:
                type: string
                example: 200
+            data:
+               type: object
+               properties:
+                  payload:
+                     $ref: '#/components/schemas/People'
             message:
                type: string
                example: 'Successful operation.'
+            details:
+               type: string
          xml:
             name: '##default'
       People:

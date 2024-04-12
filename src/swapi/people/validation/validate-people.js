@@ -65,8 +65,8 @@ const peopleSchema = z.object({
 
 const makeError = (error) => {
   throw makeErrorPattern({
-    type: Errors.BAD_REQUEST,
-    message: Object.assign(APP_ERR_001, { object: "People" }).message,
+    code: Errors.BAD_REQUEST,
+    message: Object.assign(APP_ERR_001, { object: "Person" }).message,
     details: JSON.parse(error.message),
   });
 };
