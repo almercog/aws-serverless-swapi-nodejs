@@ -1,81 +1,53 @@
-import {
-  DeleteItemCommand,
-  DynamoDBClient,
-  GetItemCommand,
-  PutItemCommand,
-  ScanCommand,
-  UpdateItemCommand,
-} from "@aws-sdk/client-dynamodb";
-import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
+import { DynamoDB } from "../datasources/DynamoDB.js";
 
-const client = new DynamoDBClient({ region: "us-east-1" });
-const PEOPLE_TABLE_NAME = process.env.PEOPLE_TABLE_NAME;
+const tableName = process.env.PEOPLE_TABLE_NAME;
 
 export class PeopleRepository {
+  constructor() {
+    this.dynamoDB = new DynamoDB();
+  }
+
   async create(createPeopleDto) {
-    const people = marshall(createPeopleDto);
-    const command = new PutItemCommand({
-      TableName: PEOPLE_TABLE_NAME,
-      Item: people,
+    const newPeople = await this.dynamoDB.create({
+      tableName,
+      createDto: createPeopleDto,
     });
-    await client.send(command);
-    return unmarshall(people);
+    return newPeople;
   }
 
-  async get(getPeopleDto) {
-    const command = new GetItemCommand({
-      TableName: PEOPLE_TABLE_NAME,
-      Key: marshall(getPeopleDto),
-    });
-    const response = await client.send(command);
-    return response.Item ? unmarshall(response.Item) : undefined;
-  }
-
-  async getAll() {
-    const scanParams = {
-      TableName: PEOPLE_TABLE_NAME,
-    };
-    const scanCommand = new ScanCommand(scanParams);
-    const response = await client.send(scanCommand);
-    return response;
-  }
-
-  async update(createPeopleDto) {
-    const itemKeys = Object.keys(createPeopleDto).filter(
+  async update(updatePeopleDto) {
+    const itemKeys = Object.keys(updatePeopleDto).filter(
       (item) => item !== "id"
     );
-    const command = new UpdateItemCommand({
-      TableName: PEOPLE_TABLE_NAME,
-      Key: marshall({ id: createPeopleDto.id }),
-      UpdateExpression: `SET ${itemKeys
-        .map((k, index) => `#field${index} = :value${index}`)
-        .join(", ")}`,
-      ExpressionAttributeNames: itemKeys.reduce(
-        (accumulator, k, index) => ({ ...accumulator, [`#field${index}`]: k }),
-        {}
-      ),
-      ExpressionAttributeValues: marshall(
-        itemKeys.reduce(
-          (accumulator, k, index) => ({
-            ...accumulator,
-            [`:value${index}`]: createPeopleDto[k],
-          }),
-          {}
-        )
-      ),
-      ReturnValues: "ALL_NEW",
-      ConditionExpression: "attribute_exists(id)",
+    const updatePeople = await this.dynamoDB.update({
+      tableName,
+      key: { id: updatePeopleDto.id },
+      updateDto: updatePeopleDto,
+      itemKeys,
     });
-    const response = await client.send(command);
-    return response.Attributes ? unmarshall(response.Attributes) : undefined;
+    return updatePeople;
   }
 
   async delete(getPeopleDto) {
-    const command = new DeleteItemCommand({
-      TableName: PEOPLE_TABLE_NAME,
-      Key: marshall(getPeopleDto),
+    await this.dynamoDB.delete({
+      tableName,
+      key: { id: getPeopleDto.id },
     });
-    await client.send(command);
     return true;
+  }
+
+  async get(getPeopleDto) {
+    const getPeople = await this.dynamoDB.get({
+      tableName,
+      key: { id: getPeopleDto.id },
+    });
+    return getPeople;
+  }
+
+  async getAll() {
+    const response = await this.dynamoDB.getAll({
+      tableName,
+    });
+    return response;
   }
 }

@@ -3,15 +3,14 @@ import {
   DynamoDBClient,
   GetItemCommand,
   PutItemCommand,
-  ScanCommand,
   UpdateItemCommand,
 } from "@aws-sdk/client-dynamodb";
 import { mockClient } from "aws-sdk-client-mock";
 import { loadFeature, defineFeature } from "jest-cucumber";
 
+import { Item, updItem } from "./people.mock.js";
 import { ApiGatewayEvent } from "../common/ApiGatewayEvent.js";
 import { PeopleController } from "../../src/swapi/people/controller/PeopleController.js";
-import { Item, updItem } from "./people.mock.js";
 
 const apiGateway = new ApiGatewayEvent();
 const ddbMock = mockClient(DynamoDBClient);
@@ -20,7 +19,6 @@ const feature = loadFeature("./test/features/people.feature", {});
 
 defineFeature(feature, (test) => {
   let request;
-  let personId;
 
   beforeEach(() => {
     ddbMock.reset();
@@ -47,7 +45,6 @@ defineFeature(feature, (test) => {
       const jsonRes = await JSON.parse(res);
       expect(code).toEqual(jsonRes.code);
       if (code === 200) {
-        personId = data.id;
         expect(data).toHaveProperty("id");
         expect(data).toHaveProperty("name");
         expect(data).toHaveProperty("skinColor");

@@ -1,14 +1,16 @@
 import { WebPort } from "../../commons/response/WebPort.js";
-import { PeopleService } from "../service/PeopleService.js";
-
-const peopleService = new PeopleService();
+import { ValidatePeople } from "../validation/validate-people.js";
 
 export class PeopleController {
-  async create(event) {
+  constructor({ peopleService }) {
+    this.peopleService = peopleService;
+  }
+
+  async create(createPeopleDto) {
     try {
-      const { payload } = JSON.parse(event.body);
-      const people = await peopleService.create(payload);
-      return WebPort.ok(people);
+      const validPeople = ValidatePeople.create(createPeopleDto);
+      const response = await this.peopleService.create(validPeople);
+      return WebPort.ok(response);
     } catch (error) {
       if (error.message.includes("code")) {
         const err = JSON.parse(error.message);
@@ -19,12 +21,14 @@ export class PeopleController {
     }
   }
 
-  async update(event) {
+  async update(getPeopleDto, updatePeopleDto) {
     try {
-      const id = event.pathParameters.id;
-      const { payload } = JSON.parse(event.body);
-      const people = await peopleService.update({ id, ...payload });
-      return WebPort.ok(people);
+      const validPeople = ValidatePeople.edit({
+        ...getPeopleDto,
+        ...updatePeopleDto,
+      });
+      const response = await this.peopleService.update(validPeople);
+      return WebPort.ok(response);
     } catch (error) {
       if (error.message.includes("code")) {
         const err = JSON.parse(error.message);
@@ -35,11 +39,11 @@ export class PeopleController {
     }
   }
 
-  async delete(event) {
+  async delete(deletePeopleDto) {
     try {
-      const id = event.pathParameters.id;
-      const people = await peopleService.delete({ id });
-      return WebPort.ok(people);
+      const validPeople = ValidatePeople.delete(deletePeopleDto);
+      const response = await this.peopleService.delete(validPeople);
+      return WebPort.ok(response);
     } catch (error) {
       if (error.message.includes("code")) {
         const err = JSON.parse(error.message);
@@ -50,11 +54,11 @@ export class PeopleController {
     }
   }
 
-  async get(event) {
+  async get(getPeopleDto) {
     try {
-      const id = event.pathParameters.id;
-      const people = await peopleService.get({ id });
-      return WebPort.ok(people);
+      const validPeople = ValidatePeople.get(getPeopleDto);
+      const response = await this.peopleService.get(validPeople);
+      return WebPort.ok(response);
     } catch (error) {
       if (error.message.includes("code")) {
         const err = JSON.parse(error.message);
@@ -65,9 +69,9 @@ export class PeopleController {
     }
   }
 
-  async getAll(_) {
+  async getAll() {
     try {
-      const people = await peopleService.getAll();
+      const people = await this.peopleService.getAll();
       return WebPort.ok(people);
     } catch (error) {
       if (error.message.includes("code")) {

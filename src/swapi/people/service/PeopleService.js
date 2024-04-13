@@ -1,43 +1,38 @@
 import { randomUUID } from "node:crypto";
-import { PeopleAPI } from "../http/PeopleAPI.js";
 import { Errors } from "../../commons/errors/enum.js";
 import { APP_ERR_002 } from "../../commons/constants.js";
 import { PeopleMapper } from "../mapper/PeopleMapper.js";
-import { ValidatePeople } from "../validation/validate-people.js";
-import { PeopleRepository } from "../repository/PeopleRepository.js";
 import { makeErrorPattern } from "../../commons/errors/pattern.js";
 
-const peopleRepository = new PeopleRepository();
-const peopleAPI = new PeopleAPI();
-
 export class PeopleService {
+  constructor({ peopleRepository, peopleAPI }) {
+    this.peopleAPI = peopleAPI;
+    this.peopleRepository = peopleRepository;
+  }
+
   async create(createPeopleDto) {
-    const people = ValidatePeople.create(createPeopleDto);
     const newPeople = {
-      ...people,
+      ...createPeopleDto,
       id: randomUUID(),
       created: Date.now(),
       edited: Date.now(),
     };
-    return peopleRepository.create(newPeople);
+    return this.peopleRepository.create(newPeople);
   }
 
   async update(updatePeopleDto) {
-    const people = ValidatePeople.edit(updatePeopleDto);
-    await this.get({ id: people.id });
-    const updatePeople = await peopleRepository.update(people);
+    await this.get({ id: updatePeopleDto.id });
+    const updatePeople = await this.peopleRepository.update(updatePeopleDto);
     return updatePeople;
   }
 
   async delete(deletePeopleDto) {
-    const people = ValidatePeople.delete(deletePeopleDto);
-    await this.get({ id: people.id });
-    return peopleRepository.delete(people);
+    await this.get({ id: deletePeopleDto.id });
+    return this.peopleRepository.delete(deletePeopleDto);
   }
 
   async get(getPeopleDto) {
-    const people = ValidatePeople.get(getPeopleDto);
-    const getPeople = await peopleRepository.get(people);
+    const getPeople = await this.peopleRepository.get(getPeopleDto);
     if (getPeople === undefined) {
       const messageError = Object.assign(APP_ERR_002, {
         object: "Person",
@@ -52,7 +47,7 @@ export class PeopleService {
   }
 
   async getAll() {
-    const people = await peopleAPI.getAll();
+    const people = await this.peopleAPI.getAll();
     return people.results.map((person) => new PeopleMapper(person));
   }
 }

@@ -1,4 +1,4 @@
-service: people-api
+service: swapi-api
 frameworkVersion: "3"
 
 provider:
@@ -32,55 +32,9 @@ resources:
             KeyType: HASH
 
 functions:
-  createPeople:
-    handler: src/swapi/people/index.createPeople
-    environment:
-      PEOPLE_TABLE_NAME: !Ref peopleTable
-      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - dynamodb:PutItem
-        Resource: !GetAtt peopleTable.Arn
-    events:
-      - http:
-          path: people
-          method: post
-
-  updatePeople:
-    handler: src/swapi/people/index.updatePeople
-    environment:
-      PEOPLE_TABLE_NAME: !Ref peopleTable
-      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - dynamodb:getItem
-          - dynamodb:updateItem
-        Resource: !GetAtt peopleTable.Arn 
-    events:
-      - http:
-          path: people/{id}
-          method: patch
-
-  deletePeople:
-    handler: src/swapi/people/index.deletePeople
-    environment:
-      PEOPLE_TABLE_NAME: !Ref peopleTable
-      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - dynamodb:getItem
-          - dynamodb:deleteItem
-        Resource: !GetAtt peopleTable.Arn
-    events:
-      - http:
-          path: people/{id}
-          method: delete
-
-  getAllPeople:
-    handler: src/swapi/people/index.getAllPeople
+  people:
+    handler: src/swapi/people/index.handler
+    description: Create a New Person
     environment:
       PEOPLE_TABLE_NAME: !Ref peopleTable
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
@@ -88,24 +42,24 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:scan
+          - dynamodb:getItem
+          - dynamodb:PutItem
+          - dynamodb:updateItem
+          - dynamodb:deleteItem
         Resource: !GetAtt peopleTable.Arn
     events:
       - http:
           path: people
-          method: get
-
-  getPeople:
-    handler: src/swapi/people/index.getPeople
-    environment:
-      PEOPLE_TABLE_NAME: !Ref peopleTable
-      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - dynamodb:getItem
-        Resource: !GetAtt peopleTable.Arn
-    events:
+          method: post
+      - http:
+          path: people/{id}
+          method: patch
+      - http:
+          path: people/{id}
+          method: delete
       - http:
           path: people/{id}
           method: get
-
+      - http:
+          path: people
+          method: get
