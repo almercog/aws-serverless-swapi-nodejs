@@ -75,7 +75,6 @@ export class ApiGatewayEvent {
   }
 
   async cb(_, response) {
-    console.log("ApiGatewayEvent", response);
     return response;
   }
 }

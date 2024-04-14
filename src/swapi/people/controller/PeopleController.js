@@ -16,7 +16,7 @@ export class PeopleController {
         const err = JSON.parse(error.message);
         return WebPort.badRequest(err.message, err.details);
       } else {
-        return WebPort.serverError(error.message);
+        return WebPort.serverError(error.message || "Internal Server Error");
       }
     }
   }
@@ -34,7 +34,7 @@ export class PeopleController {
         const err = JSON.parse(error.message);
         return WebPort.badRequest(err.message, err.details);
       } else {
-        return WebPort.serverError(error.message);
+        return WebPort.serverError(error.message || "Internal Server Error");
       }
     }
   }
@@ -49,7 +49,7 @@ export class PeopleController {
         const err = JSON.parse(error.message);
         return WebPort.badRequest(err.message, err.details);
       } else {
-        return WebPort.serverError(error.message);
+        return WebPort.serverError(error.message || "Internal Server Error");
       }
     }
   }
@@ -64,7 +64,7 @@ export class PeopleController {
         const err = JSON.parse(error.message);
         return WebPort.badRequest(err.message, err.details);
       } else {
-        return WebPort.serverError(error.message);
+        return WebPort.serverError(error.message || "Internal Server Error");
       }
     }
   }
@@ -74,12 +74,7 @@ export class PeopleController {
       const people = await this.peopleService.getAll();
       return WebPort.ok(people);
     } catch (error) {
-      if (error.message.includes("code")) {
-        const err = JSON.parse(error.message);
-        return WebPort.badRequest(err.message, err.details);
-      } else {
-        return WebPort.serverError(error.message);
-      }
+      return WebPort.serverError(error.message || "Internal Server Error");
     }
   }
 }
