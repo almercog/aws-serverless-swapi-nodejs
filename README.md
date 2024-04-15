@@ -1,6 +1,9 @@
 # aws-serverless-swapi-nodejs
 
-Reto tecnico, esta aplicacion contiene las APIs basado en los servicios de Star Wars API, para ello se uso lo siguiente NodeJS v18, DynamoDB, Gherkin, Jest, Cucumber, y para la documentacion se uso OpenAPI **people.yml**
+Reto tecnico, esta aplicación contiene las APIs, basado en los servicios de Star Wars API, para ello se uso lo siguiente: NodeJS v18, DynamoDB, Gherkin, Jest, Cucumber, además para desplegar se uso serverless y para la documentación se uso OpenAPI **people.yml**
+
+> !important
+> Para desplegar estas APIs, se necesita tener instalado y configurado el AWS CLI. Configurar con **aws config**, con su usuario.
 
 ## Getting Started
 
